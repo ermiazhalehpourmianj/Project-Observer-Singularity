@@ -1,0 +1,11 @@
+[project]
+name = "os-gravity-collapse"
+version = "0.1.0"
+description = "Toy toolkit skeleton for gravity-weighted collapse simulations (Observer–Singularity)."
+dependencies = [
+  "matplotlib",
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
