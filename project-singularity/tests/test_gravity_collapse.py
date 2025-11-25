@@ -10,7 +10,9 @@ from os_gravity_collapse import (
     delta_E_G_point_mass,
     os_collapse_rates,
     scenario_summary,
+    visibility_env,
     visibility_os,
+    visibility_os_plus_env,
 )
 
 
@@ -37,6 +39,20 @@ def test_visibility_behavior():
     assert visibility_os(1.0, gamma) < visibility_os(0.5, gamma)
     with pytest.raises(ValueError):
         visibility_os(-1.0, gamma)
+
+
+def test_environment_visibility_behavior():
+    gamma_env = 2.0
+    gamma_col = 1.0
+    assert visibility_env(0.0, gamma_env) == pytest.approx(1.0)
+    assert visibility_env(0.5, gamma_env) < 1.0
+    assert visibility_os_plus_env(0.5, gamma_col, gamma_env) < visibility_env(
+        0.5, gamma_env
+    )
+    with pytest.raises(ValueError):
+        visibility_env(-0.1, gamma_env)
+    with pytest.raises(ValueError):
+        visibility_env(0.1, -1.0)
 
 
 def test_benchmark_scenarios_uniqueness():

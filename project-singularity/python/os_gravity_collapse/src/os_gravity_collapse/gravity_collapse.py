@@ -164,6 +164,64 @@ def visibility_qm_no_collapse(t: float) -> float:
     return 1.0
 
 
+def visibility_env(t: float, gamma_env: float) -> float:
+    """Visibility under a pure environment decoherence model V_env(t) = exp(-Γ_env * t).
+
+    Parameters
+    ----------
+    t:
+        Time in seconds. Must satisfy ``t >= 0``.
+    gamma_env:
+        Environment decoherence rate Γ_env in s^-1. Must be non-negative.
+
+    Returns
+    -------
+    float
+        Interference visibility at time ``t`` under environment-only decoherence.
+
+    Raises
+    ------
+    ValueError
+        If ``t`` is negative or ``gamma_env`` is negative.
+    """
+
+    if t < 0:
+        raise ValueError("Time must be non-negative when evaluating environment visibility.")
+    if gamma_env < 0:
+        raise ValueError("Environment decoherence rate gamma_env must be non-negative.")
+    return math.exp(-gamma_env * t)
+
+
+def visibility_os_plus_env(t: float, gamma_col: float, gamma_env: float) -> float:
+    """Combined OS collapse and environment decoherence V_OS+env(t) = exp(-(Γ_col+Γ_env) * t).
+
+    Parameters
+    ----------
+    t:
+        Time in seconds. Must satisfy ``t >= 0``.
+    gamma_col:
+        OS collapse rate Γ_col in s^-1.
+    gamma_env:
+        Environment decoherence rate Γ_env in s^-1. Must be non-negative.
+
+    Returns
+    -------
+    float
+        Interference visibility at time ``t`` under the combined model.
+
+    Raises
+    ------
+    ValueError
+        If ``t`` is negative or ``gamma_env`` is negative.
+    """
+
+    if t < 0:
+        raise ValueError("Time must be non-negative when evaluating combined visibility.")
+    if gamma_env < 0:
+        raise ValueError("Environment decoherence rate gamma_env must be non-negative.")
+    return math.exp(-(gamma_col + gamma_env) * t)
+
+
 def visibility_curve_os(
     times: list[float] | tuple[float, ...],
     gamma_col: float,
@@ -194,6 +252,35 @@ def visibility_curve_os(
     return [visibility_os(t, gamma_col) for t in times]
 
 
+def visibility_curve_env(
+    times: list[float] | tuple[float, ...],
+    gamma_env: float,
+) -> list[float]:
+    """Evaluate environment-only visibility over a sequence of times."""
+
+    for t in times:
+        if t < 0:
+            raise ValueError("All time values must be non-negative for visibility curves.")
+    if gamma_env < 0:
+        raise ValueError("Environment decoherence rate gamma_env must be non-negative.")
+    return [visibility_env(t, gamma_env) for t in times]
+
+
+def visibility_curve_os_plus_env(
+    times: list[float] | tuple[float, ...],
+    gamma_col: float,
+    gamma_env: float,
+) -> list[float]:
+    """Evaluate combined OS + environment visibility over a sequence of times."""
+
+    for t in times:
+        if t < 0:
+            raise ValueError("All time values must be non-negative for visibility curves.")
+    if gamma_env < 0:
+        raise ValueError("Environment decoherence rate gamma_env must be non-negative.")
+    return [visibility_os_plus_env(t, gamma_col, gamma_env) for t in times]
+
+
 __all__ = [
     "G",
     "HBAR",
@@ -205,4 +292,8 @@ __all__ = [
     "visibility_os",
     "visibility_qm_no_collapse",
     "visibility_curve_os",
+    "visibility_env",
+    "visibility_os_plus_env",
+    "visibility_curve_env",
+    "visibility_curve_os_plus_env",
 ]

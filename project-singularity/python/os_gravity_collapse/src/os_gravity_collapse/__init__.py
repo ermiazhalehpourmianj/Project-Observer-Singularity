@@ -17,6 +17,10 @@ from .gravity_collapse import (
     visibility_os,
     visibility_qm_no_collapse,
     visibility_curve_os,
+    visibility_env,
+    visibility_os_plus_env,
+    visibility_curve_env,
+    visibility_curve_os_plus_env,
 )
 from .experiments import (
     ScenarioResult,
@@ -37,6 +41,10 @@ __all__ = [
     "visibility_os",
     "visibility_qm_no_collapse",
     "visibility_curve_os",
+    "visibility_env",
+    "visibility_os_plus_env",
+    "visibility_curve_env",
+    "visibility_curve_os_plus_env",
     "ScenarioResult",
     "run_scenario",
     "benchmark_scenarios",

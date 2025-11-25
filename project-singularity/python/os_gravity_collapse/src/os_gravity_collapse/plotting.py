@@ -6,6 +6,8 @@ predictions to support exploratory analysis and documentation figures.
 """
 from __future__ import annotations
 
+from typing import TYPE_CHECKING, Any
+
 from .gravity_collapse import (
     OSParameters,
     SuperpositionConfig,
@@ -14,6 +16,11 @@ from .gravity_collapse import (
     visibility_qm_no_collapse,
 )
 
+if TYPE_CHECKING:  # pragma: no cover - import for type checking only
+    from matplotlib.axes import Axes
+else:  # pragma: no cover - at runtime we type alias to avoid hard dependency on import time
+    Axes = Any
+
 
 def plot_visibility_vs_time(
     config: SuperpositionConfig,
@@ -21,8 +28,27 @@ def plot_visibility_vs_time(
     t_max: float,
     n_points: int = 200,
     show_qm_baseline: bool = True,
-):
-    """Plot visibility vs time for OS collapse and optionally a QM baseline."""
+) -> Axes:
+    """Plot visibility vs time for OS collapse and optionally a QM baseline.
+
+    Parameters
+    ----------
+    config:
+        Superposition configuration describing mass and separation.
+    params:
+        OS collapse model parameters (λ).
+    t_max:
+        Maximum time (seconds) for the plotted trajectory.
+    n_points:
+        Number of samples in the time grid (minimum 2).
+    show_qm_baseline:
+        If True, overlay a flat V_QM = 1 line for comparison.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        The axes containing the plotted curves.
+    """
 
     import matplotlib.pyplot as plt
 
