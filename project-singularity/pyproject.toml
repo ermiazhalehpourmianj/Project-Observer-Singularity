@@ -1,0 +1,7 @@
+[project]
+name = "project-singularity"
+version = "0.1.0"
+description = "Research scaffolding for the Project Singularity program: gravity-weighted collapse toolkit and companion papers."
+dependencies = [
+  "matplotlib",
+]
