@@ -27,7 +27,18 @@ SCENARIOS: Sequence[tuple[str, float, float, float, float]] = [
     ("macroscopic", 1e-6, 1e-3, 1e-3, 1.0),
 ]
 
-OUTPUT_CSV = Path("experiments/analysis/os_vs_qm_comparison.csv")
+OUTPUT_CSV = Path(__file__).resolve().parent.parent / "experiments/analysis/os_vs_qm_comparison.csv"
+
+FIELDNAMES = (
+    "name",
+    "mass_kg",
+    "separation_m",
+    "time_s",
+    "tau_c",
+    "V_os",
+    "V_qm",
+    "delta_visibility",
+)
 
 
 def format_sci(value: float) -> str:
@@ -64,49 +75,35 @@ def compute_results(
 
 
 def print_table(results: Sequence[dict[str, float | str]]) -> None:
-    """Print a formatted comparison table to stdout."""
-    header = (
-        "name", "mass_kg", "separation_m", "time_s", "tau_c", "V_os", "V_qm", "delta_visibility"
-    )
-    row_fmt = (
-        "{name:<12s} {mass_kg:>12.3e} {separation_m:>12.3e} {time_s:>10.3e} "
-        "{tau_c:>12s} {V_os:>10.3e} {V_qm:>10.3e} {delta_visibility:>16.3e}"
-    )
+    """Print a CSV-style comparison table to stdout."""
 
-    print(" ".join(f"{h:>12s}" if i else f"{h:<12s}" for i, h in enumerate(header)))
+    print(",".join(FIELDNAMES))
     for result in results:
         print(
-            row_fmt.format(
-                name=str(result["name"]),
-                mass_kg=float(result["mass_kg"]),
-                separation_m=float(result["separation_m"]),
-                time_s=float(result["time_s"]),
-                tau_c=format_sci(float(result["tau_c"])),
-                V_os=float(result["V_os"]),
-                V_qm=float(result["V_qm"]),
-                delta_visibility=float(result["delta_visibility"]),
+            ",".join(
+                [
+                    str(result["name"]),
+                    f"{float(result['mass_kg']):.6e}",
+                    f"{float(result['separation_m']):.6e}",
+                    f"{float(result['time_s']):.6e}",
+                    format_sci(float(result["tau_c"])),
+                    f"{float(result['V_os']):.6e}",
+                    f"{float(result['V_qm']):.6e}",
+                    f"{float(result['delta_visibility']):.6e}",
+                ]
             )
         )
 
 
 def write_csv(results: Sequence[dict[str, float | str]], output_path: Path) -> None:
     """Write scenario comparison results to a CSV file with a header row."""
+
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    fieldnames = [
-        "name",
-        "mass_kg",
-        "separation_m",
-        "time_s",
-        "tau_c",
-        "V_os",
-        "V_qm",
-        "delta_visibility",
-    ]
     with output_path.open("w", newline="", encoding="utf-8") as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer = csv.DictWriter(csvfile, fieldnames=FIELDNAMES)
         writer.writeheader()
         for row in results:
-            writer.writerow({key: row[key] for key in fieldnames})
+            writer.writerow({key: row[key] for key in FIELDNAMES})
 
 
 def main() -> None:
