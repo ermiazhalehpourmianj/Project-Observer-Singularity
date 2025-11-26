@@ -74,7 +74,7 @@ class CollapseResult:
     tau_c: float
 
 
-def delta_E_G_point_mass(mass: float, separation: float) -> float:
+def delta_E_G_point_mass(mass: float, separation: float, g_geom: float = 1.0) -> float:
     """Estimate gravitational self-energy for two point-mass branches.
 
     Parameters
@@ -83,6 +83,9 @@ def delta_E_G_point_mass(mass: float, separation: float) -> float:
         Mass of the object in kilograms. Must be positive.
     separation:
         Distance between the branch centroids in meters. Must be positive.
+    g_geom:
+        Dimensionless geometry factor to rescale the point-mass estimate
+        (default 1.0). Must be positive.
 
     Returns
     -------
@@ -100,12 +103,15 @@ def delta_E_G_point_mass(mass: float, separation: float) -> float:
         raise ValueError("Mass must be positive to compute ΔE_G.")
     if separation <= 0:
         raise ValueError("Separation must be positive to compute ΔE_G.")
-    return G * mass**2 / separation
+    if g_geom <= 0:
+        raise ValueError("Geometry factor g_geom must be positive to compute ΔE_G.")
+    return g_geom * G * mass**2 / separation
 
 
 def os_collapse_rates(
     config: SuperpositionConfig,
     params: OSParameters | None = None,
+    g_geom: float = 1.0,
 ) -> CollapseResult:
     """Compute OS collapse quantities for a two-branch point-mass superposition.
 
@@ -118,6 +124,9 @@ def os_collapse_rates(
         Superposition configuration (mass, separation).
     params:
         Observer–Singularity parameters. If omitted, defaults to ``OSParameters()``.
+    g_geom:
+        Dimensionless geometry factor applied to the point-mass ΔE_G estimate. Defaults
+        to 1.0 (pure point mass). Must be positive.
 
     Returns
     -------
@@ -126,7 +135,7 @@ def os_collapse_rates(
     """
 
     _params = params or OSParameters()
-    delta_e_g = delta_E_G_point_mass(config.mass, config.separation)
+    delta_e_g = delta_E_G_point_mass(config.mass, config.separation, g_geom=g_geom)
     gamma_col = _params.lam * delta_e_g / HBAR
     tau_c = math.inf if gamma_col <= 0 else 1.0 / gamma_col
     return CollapseResult(delta_E_G=delta_e_g, gamma_col=gamma_col, tau_c=tau_c)

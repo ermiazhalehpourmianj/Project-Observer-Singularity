@@ -29,6 +29,17 @@ from .experiments import (
     scenario_summary,
 )
 from .plotting import plot_visibility_vs_time, quick_plot_nanoparticle_demo
+from .analysis import (
+    ExperimentData,
+    LambdaConstraint,
+    RegimeAssessment,
+    TestabilityAssessment,
+    assess_regime,
+    assess_testability,
+    find_lambda_constraint,
+    is_os_safely_alive,
+    is_os_strongly_testable,
+)
 
 __all__ = [
     "G",
@@ -51,4 +62,13 @@ __all__ = [
     "scenario_summary",
     "plot_visibility_vs_time",
     "quick_plot_nanoparticle_demo",
+    "ExperimentData",
+    "LambdaConstraint",
+    "RegimeAssessment",
+    "TestabilityAssessment",
+    "assess_regime",
+    "assess_testability",
+    "find_lambda_constraint",
+    "is_os_safely_alive",
+    "is_os_strongly_testable",
 ]
