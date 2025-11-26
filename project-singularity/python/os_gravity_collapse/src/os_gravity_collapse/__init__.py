@@ -22,6 +22,17 @@ from .gravity_collapse import (
     visibility_curve_env,
     visibility_curve_os_plus_env,
 )
+from .analysis import (
+    RegimeAssessment,
+    ExperimentData,
+    TestabilityAssessment,
+    LambdaConstraint,
+    assess_regime,
+    is_os_safely_alive,
+    is_os_strongly_testable,
+    assess_testability,
+    find_lambda_constraint,
+)
 from .experiments import (
     ScenarioResult,
     run_scenario,
@@ -45,6 +56,15 @@ __all__ = [
     "visibility_os_plus_env",
     "visibility_curve_env",
     "visibility_curve_os_plus_env",
+    "RegimeAssessment",
+    "ExperimentData",
+    "TestabilityAssessment",
+    "LambdaConstraint",
+    "assess_regime",
+    "is_os_safely_alive",
+    "is_os_strongly_testable",
+    "assess_testability",
+    "find_lambda_constraint",
     "ScenarioResult",
     "run_scenario",
     "benchmark_scenarios",
